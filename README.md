@@ -1,6 +1,16 @@
 # Rick and Morty
 
+## ScreenShots
+
+<img src="docs/desktop.jpg" /><br />
+<img src="docs/mobile1.jpg" /><br />
+<img src="docs/mobile2.jpg" /><br />
+<img src="docs/mobile3.jpg" /><br />
+
 Below is a list of commands you will probably find useful.
+
+### `npm i` or `yarn`
+Install the projects dependencies
 
 ### `npm start` or `yarn start`
 
