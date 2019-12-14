@@ -9,16 +9,19 @@ class App extends React.Component {
     super();
     this.state = {
       characterList: [],
-      species: ""
+      status: "",
+      species: "",
+      gender: "",
     };
   }
 
   getData = () => {
-    const { species } = this.state;
+    const { species, gender, status } = this.state;
     const queryString = qs.stringify(
       {
         species,
-        gender: ["male"]
+        gender,
+        status
       },
       { arrayFormat: "comma" }
     );
@@ -30,12 +33,22 @@ class App extends React.Component {
         this.setState({
           characterList: response.data.results
         });
-        console.log(response.data.results);
       })
       .catch(error => {
         // handle error
         console.log(error);
       });
+  };
+
+  addStatusFilter = e => {
+    this.setState(
+      {
+        status: e.target.checked ? e.target.value : ''
+      },
+      () => {
+        this.getData();
+      }
+    );
   };
 
   addSpeciesFilter = e => {
@@ -49,10 +62,25 @@ class App extends React.Component {
     );
   };
 
-  removeFilter = (key, value) => {
+  addGenderFilter = e => {
+    this.setState(
+      {
+        gender: e.target.checked ? e.target.value : ''
+      },
+      () => {
+        this.getData();
+      }
+    );
+  };
+
+  removeFilter = (key) => {
     this.setState({
       [key]: ""
-    });
+    },
+      () => {
+        this.getData();
+      }
+    );
   };
 
   sortCharacterList = e => {
@@ -70,7 +98,47 @@ class App extends React.Component {
         <div className="leftCol">
           <h2>Filters</h2>
           <div className="filterBox">
+            <h3>Status</h3>
+            <label>
+              <input 
+                type="checkbox" 
+                checked={this.state.status === "alive"}
+                value="alive"
+                onClick={this.addStatusFilter}
+              /> 
+              Alive
+            </label>
+            <label>
+            <input 
+                type="checkbox" 
+                checked={this.state.status === "dead"}
+                value="dead"
+                onClick={this.addStatusFilter}
+              /> 
+              Dead
+            </label>
+            <label>
+            <input 
+                type="checkbox" 
+                checked={this.state.status === "unknown"}
+                value="unknown"
+                onClick={this.addStatusFilter}
+              /> 
+              Unknown
+            </label>
+          </div>
+
+          <div className="filterBox">
             <h3>Species</h3>
+            <label>
+              <input
+                checked={this.state.species === "alien"}
+                type="checkbox"
+                value="alien"
+                onClick={this.addSpeciesFilter}
+              />{" "}
+              Alien
+            </label>
             <label>
               <input
                 checked={this.state.species === "human"}
@@ -91,6 +159,15 @@ class App extends React.Component {
             </label>
             <label>
               <input
+                checked={this.state.species === "humanoid"}
+                type="checkbox"
+                value="humanoid"
+                onClick={this.addSpeciesFilter}
+              />{" "}
+              Humanoid
+            </label>
+            <label>
+              <input
                 checked={this.state.species === "unknown"}
                 type="checkbox"
                 value="unknown"
@@ -102,37 +179,58 @@ class App extends React.Component {
           <div className="filterBox">
             <h3>Gender</h3>
             <label>
-              <input type="checkbox" /> Male
+              <input 
+                type="checkbox" 
+                checked={this.state.gender === "male"}
+                value="male"
+                onClick={this.addGenderFilter}
+              /> 
+              Male
             </label>
             <label>
-              <input type="checkbox" /> Female
-            </label>
-          </div>
-          <div className="filterBox">
-            <h3>Origin</h3>
-            <label>
-              <input type="checkbox" /> Unknown
-            </label>
-            <label>
-              <input type="checkbox" /> Post-Apocalyptic Earth
-            </label>
-            <label>
-              <input type="checkbox" /> Nuptia 4
-            </label>
-            <label>
-              <input type="checkbox" /> Other Origins ...
+              <input
+                type="checkbox" 
+                checked={this.state.gender === "female"}
+                value="female"
+                onClick={this.addGenderFilter}                
+              /> 
+              Female
             </label>
           </div>
         </div>
         <div className="rightCol">
-          <h2>Selected Filters</h2>
+          {(this.state.status.length > 0 || this.state.species.length > 0 || this.state.gender.length > 0) && <h2>Selected Filters</h2>}
           <div className="SelectedFilterBox">
+          {this.state.status && (
+              <div className="selectedFilter">
+                {this.state.status}{" "}
+                <span
+                  onClick={() =>
+                    this.removeFilter("status", this.state.status)
+                  }
+                >
+                  X
+                </span>
+              </div>
+            )}
             {this.state.species && (
               <div className="selectedFilter">
                 {this.state.species}{" "}
                 <span
                   onClick={() =>
                     this.removeFilter("species", this.state.species)
+                  }
+                >
+                  X
+                </span>
+              </div>
+            )}
+            {this.state.gender && (
+              <div className="selectedFilter">
+                {this.state.gender}{" "}
+                <span
+                  onClick={() =>
+                    this.removeFilter("gender", this.state.gender)
                   }
                 >
                   X
@@ -173,7 +271,7 @@ class App extends React.Component {
                   </div>
                   <div className="row">
                     <div className="col1">ORIGIN</div>
-                    <div className="col2">{item.origin.name} </div>
+                    <div className="col2 ellipsis1">{item.origin.name} </div>
                   </div>
                   <div className="row">
                     <div className="col1">LAST LOCATION</div>
