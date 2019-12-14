@@ -86,7 +86,7 @@ class App extends React.Component {
 
   sortCharacterList = e => {
     this.setState({
-      characterList: e.target.value === 1 ? this.state.characterList.sort((a, b) => a - b) : this.state.characterList.sort((a, b) => b - a)  
+      characterList: Number(e.target.value) === 1 ? this.state.characterList.sort((a, b) => a.id - b.id) : this.state.characterList.sort((a, b) => b.id - a.id)  
     })
   }
 
