@@ -12,6 +12,7 @@ class App extends React.Component {
       status: "",
       species: "",
       gender: "",
+      filter: false,
     };
   }
 
@@ -89,14 +90,27 @@ class App extends React.Component {
     })
   }
 
+  openFilter = () => {
+    this.setState({
+      filter: true
+    })
+  }
+  closeFilter = () => {
+    this.setState({
+      filter: false
+    })
+  }
+
   componentDidMount() {
     this.getData();
   }
   render() {
     return (
       <div className="App">
-        <div className="leftCol">
-          <h2>Filters</h2>
+        <div className={`leftCol ${this.state.filter && 'active'}`}>
+          <div>
+          <span className="close-filter" onClick={this.closeFilter} />
+          <h2> Filters</h2>
           <div className="filterBox">
             <h3>Status</h3>
             <label>
@@ -127,7 +141,6 @@ class App extends React.Component {
               Unknown
             </label>
           </div>
-
           <div className="filterBox">
             <h3>Species</h3>
             <label>
@@ -197,8 +210,10 @@ class App extends React.Component {
               Female
             </label>
           </div>
+          </div>
         </div>
         <div className="rightCol">
+          <div className="filterBtn" onClick={this.openFilter}><i className="filter-icon" /> Filter</div>
           {(this.state.status.length > 0 || this.state.species.length > 0 || this.state.gender.length > 0) && <h2>Selected Filters</h2>}
           <div className="SelectedFilterBox">
           {this.state.status && (
